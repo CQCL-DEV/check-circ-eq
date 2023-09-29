@@ -52,8 +52,9 @@ def run(max_qubits, results):
                 new_circ = Circuit.from_dict(json.load(f))
             with open(old_circ_f, "r") as f:
                 old_circ = Circuit.from_dict(json.load(f))
+            assert new_circ.n_qubits == old_circ.n_qubits
             print(
-                f"Checking equivalence for {name} ({new_circ.n_qubits} qb, {new_circ.n_gates} gates)"
+                f"Checking equivalence for {name} ({new_circ.n_qubits} qb, {old_circ.n_gates} -> {new_circ.n_gates} gates)"
             )
             if new_circ.n_qubits > max_qubits:
                 print("Skip")
