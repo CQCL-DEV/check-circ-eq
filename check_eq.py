@@ -52,7 +52,11 @@ def run(max_qubits, results):
                 new_circ = Circuit.from_dict(json.load(f))
             with open(old_circ_f, "r") as f:
                 old_circ = Circuit.from_dict(json.load(f))
-            assert new_circ.n_qubits == old_circ.n_qubits
+            if new_circ.n_qubits != old_circ.n_qubits:
+                print(
+                    f"{name} have different qubit count in bef/ and aft/ ({old_circ.n_qubits} vs {new_circ.n_qubits})"
+                )
+                exit(1)
             print(
                 f"Checking equivalence for {name} ({new_circ.n_qubits} qb, {old_circ.n_gates} -> {new_circ.n_gates} gates)"
             )
