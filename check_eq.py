@@ -5,7 +5,7 @@ from glob import glob
 from pathlib import Path
 
 from pytket import Circuit
-from pytket.qasm import circuit_from_qasm
+from pytket.qasm import circuit_from_qasm_str
 from pytket.extensions.cutensornet import TensorNetwork
 import cuquantum as cq
 import numpy as np
@@ -49,7 +49,12 @@ def run(max_qubits, results):
         old_circ_f = os.path.join(old_circs, name)
         name = Path(name).stem
 
-        old_circ = load_circuit(old_circ_f)
+        try:
+            old_circ = load_circuit(old_circ_f)
+        except ValueError:
+            # Ignore this file
+            # We only support tket1 json and qasm files
+            continue
 
         json_new_circs = glob(os.path.join(new_circs, name + "*.json"))
         qasm_new_circs = glob(os.path.join(new_circs, name + "*.qasm"))
@@ -93,9 +98,17 @@ def load_circuit(file):
     # Check the extension
     if file.suffix == ".json":
         with open(file, "r") as f:
-            circ = Circuit.from_dict(json.load(f))
+            json_circ = json.load(f)
+            # Ignore classical registers
+            json_circ["bits"] = []
+            circ = Circuit.from_dict(json_circ)
     elif file.suffix == ".qasm":
-        circ = circuit_from_qasm(file)
+        with open(file, "r") as f:
+            # Ignore classical registers
+            qasm = "".join(line for line in f if "creg" not in line)
+            circ = circuit_from_qasm_str(qasm)
+    else:
+        raise ValueError(f"Unknown file extension: {file.suffix}")
 
     return circ
 
