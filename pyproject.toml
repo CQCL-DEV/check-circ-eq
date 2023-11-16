@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "check-circ-eq"
+version = "0.1.0"
+description = "Circuit equality checker tool."
+authors = [
+    "Luca Mondada <luca@mondada.net>",
+    "Agustín Borgna <agustin.borgna@quantinuum.com>",
+]
+classifiers = ["Private :: Do Not Upload"]
+include = ["pyproject.toml"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytket = "^1.21"
+pytket-cutensornet = "^0.4"
+cuquantum-python-cu12 = "^23.10"
+numpy = "*"
+termcolor = "^2.3"
+
+[tool.poetry.dev-dependencies]
+ruff = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
